@@ -1,23 +1,16 @@
 import RPi.GPIO as GPIO
-import subprocess
 import time
+import subprocess
 
 START_PIN = 17
-STOP_PIN  = 27
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(START_PIN, GPIO.OUT)
-GPIO.setup(STOP_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-# Start actie
-GPIO.output(START_PIN, GPIO.HIGH)
-audio = subprocess.Popen(["aplay", "sound.wav"])
 
 while True:
-    if GPIO.input(STOP_PIN) == GPIO.HIGH:
-        audio.terminate()        # geluid stoppen
-        GPIO.output(START_PIN, GPIO.LOW)
-        break
-    time.sleep(0.05)
+    GPIO.output(START_PIN, GPIO.HIGH)
+    subprocess.Popen(["aplay", "sound.wav"])  # optioneel
+    time.sleep(1.0)        # servo actief
 
-GPIO.cleanup()
+    GPIO.output(START_PIN, GPIO.LOW)
+    time.sleep(15)         # wacht 15 s
